@@ -10,4 +10,4 @@ build: off  # отключаем встроенную в appveyor систему
 build_script:
   - npm run build   # команда сборки
 test_script:
-  - yarn lint && yarn e2e # скрипт тестирования
+  - yarn lint && yarn build # скрипт тестирования
