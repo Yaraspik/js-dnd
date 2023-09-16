@@ -1,4 +1,4 @@
-import Task from "./Task";
+import Task from './Task';
 
 export default class Kanban {
   constructor(container) {
@@ -59,15 +59,15 @@ export default class Kanban {
   }
 
   moveAt(pageX, pageY) {
-    this.actualTask.style.left = pageX - this.actualTask.shiftX + 'px';
-    this.actualTask.style.top = pageY - this.actualTask.shiftY + 'px';
+    this.actualTask.style.left = `${pageX - this.actualTask.shiftX}px`;
+    this.actualTask.style.top = `${pageY - this.actualTask.shiftY}px`;
   }
 
   onMouseUp() {
     document.body.style.cursor = 'auto';
 
     const clone = this.taskClone;
-    const initialColumnName = this.actualTask.initialColumnName;
+    const { initialColumnName } = this.actualTask;
 
     this.taskClone.classList.remove('clone');
     this.actualTask.remove();
@@ -82,10 +82,10 @@ export default class Kanban {
 
     if (clone.nextSibling) {
       const nextElText = clone.nextSibling.querySelector('.task-content').textContent;
-      indexUpMouse = this.data[columnName].findIndex(el => el === nextElText);
+      indexUpMouse = this.data[columnName].findIndex((el) => el === nextElText);
     }
 
-    const indexActiveTask = this.data[initialColumnName].findIndex(el => el === textActualTask);
+    const indexActiveTask = this.data[initialColumnName].findIndex((el) => el === textActualTask);
 
     this.data[initialColumnName].splice(indexActiveTask, 1);
     this.data[columnName].splice(indexUpMouse, 0, this.actualTask.querySelector('.task-content').textContent);
@@ -104,25 +104,27 @@ export default class Kanban {
   onMouseMove(e) {
     this.moveAt(e.clientX, e.clientY);
 
-    const _activeColumn = e.target.closest('.column');
+    const tempActiveColumn = e.target.closest('.column');
 
-    if (!_activeColumn) return;
-    this.activeColumn = _activeColumn;
+    if (!tempActiveColumn) return;
+    this.activeColumn = tempActiveColumn;
 
-    const taskList = _activeColumn.querySelector('.task-list');
+    const taskList = tempActiveColumn.querySelector('.task-list');
     const mouseTask = e.target.closest('.task');
     const tasks = taskList.querySelectorAll('.task');
-    
-    if (!tasks) {
-      return taskList.append(this.taskClone);
-    }
 
-    if(!mouseTask) {
+    if (!tasks) {
+      taskList.append(this.taskClone);
       return;
     }
-    
-    const verticalTaskCenter = mouseTask.getBoundingClientRect().top + mouseTask.getBoundingClientRect().height / 2;
-    
+
+    if (!mouseTask) {
+      return;
+    }
+
+    const verticalTaskCenter = mouseTask.getBoundingClientRect().top
+      + mouseTask.getBoundingClientRect().height / 2;
+
     if (e.clientY > verticalTaskCenter) {
       taskList.insertBefore(this.taskClone, mouseTask.nextSibling);
     } else {
@@ -215,4 +217,4 @@ export default class Kanban {
       this.data = savedData;
     }
   }
-};
+}
